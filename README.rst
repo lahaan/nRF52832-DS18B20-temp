@@ -21,317 +21,315 @@ Setup desc. in main.c
 
 .. code-block:: dts
 
-
-
-/dts-v1/;
-#include <nordic/nrf52832_qfaa.dtsi>
-#include "nrf52dk_nrf52832-pinctrl.dtsi"
-#include <zephyr/dt-bindings/input/input-event-codes.h>
-
-
-/ {
-	model = "Nordic nRF52 DK NRF52832";
-	compatible = "nordic,nrf52-dk-nrf52832";
-
-	chosen {
-		zephyr,console = &uart0;
-		zephyr,shell-uart = &uart0;
-		zephyr,uart-mcumgr = &uart0;
-		zephyr,bt-mon-uart = &uart0;
-		zephyr,bt-c2h-uart = &uart0;
-		zephyr,sram = &sram0;
-		zephyr,flash = &flash0;
-		zephyr,code-partition = &slot0_partition;
-	};
-
+	/dts-v1/;
+	#include <nordic/nrf52832_qfaa.dtsi>
+	#include "nrf52dk_nrf52832-pinctrl.dtsi"
+	#include <zephyr/dt-bindings/input/input-event-codes.h>
 	
-
-	leds {
-		compatible = "gpio-leds";
-
-		led0: led_0 {
-			gpios = <&gpio0 17 GPIO_ACTIVE_LOW>;
-			label = "Green LED 0";
-		};
-
-		led1: led_1 {
-			gpios = <&gpio0 18 GPIO_ACTIVE_LOW>;
-			label = "Green LED 1";
-		};
-
-		led2: led_2 {
-			gpios = <&gpio0 19 GPIO_ACTIVE_LOW>;
-			label = "Green LED 2";
-		};
-
-		led3: led_3 {
-			gpios = <&gpio0 20 GPIO_ACTIVE_LOW>;
-			label = "Green LED 3";
-		};
-	};
-
-	pwmleds {
-		compatible = "pwm-leds";
-
-		pwm_led0: pwm_led_0 {
-			pwms = <&pwm0 0 PWM_MSEC(20) PWM_POLARITY_INVERTED>;
-		};
-	};
-
-	buttons {
-		compatible = "gpio-keys";
-		wakeup-source;
-
-		button0: button_0 {
-			gpios = <&gpio0 13 (GPIO_PULL_UP | GPIO_ACTIVE_LOW)>;
-			label = "Push button switch 0";
-			zephyr,code = <INPUT_KEY_0>;
-		};
-
-		button1: button_1 {
-			gpios = <&gpio0 14 (GPIO_PULL_UP | GPIO_ACTIVE_LOW)>;
-			label = "Push button switch 1";
-			zephyr,code = <INPUT_KEY_1>;
-		};
-
-		button2: button_2 {
-			gpios = <&gpio0 15 (GPIO_PULL_UP | GPIO_ACTIVE_LOW)>;
-			label = "Push button switch 2";
-			zephyr,code = <INPUT_KEY_2>;
-		};
-
-		button3: button_3 {
-			gpios = <&gpio0 16 (GPIO_PULL_UP | GPIO_ACTIVE_LOW)>;
-			label = "Push button switch 3";
-			zephyr,code = <INPUT_KEY_3>;
-		};
-	};
-
-	gpio_trigger {
-		compatible = "gpio-leds";
-		trigger_pin: trigger_0 {
-			gpios = <&gpio0 11 GPIO_ACTIVE_HIGH>;
-			label = "Wakeup Trigger Pin"; //sbc wakeup
-		};
-		trigger_pin2: trigger_1 {
-			gpios = <&gpio0 12 GPIO_ACTIVE_HIGH>;
-			label = "Wakeup Trigger Pin 2"; //modem wakeup
-		};
-
-	};
-
-	gpio_wake {
-		compatible = "gpio-keys";
-		wakeup-source;
-		wake_pin: wake_pin {
-			gpios = <&gpio0 28 (GPIO_PULL_UP | GPIO_ACTIVE_LOW)>;
-			label = "Wakeup Pin"; //sbc interrupting sbc for wake
-			zephyr,code = <INPUT_KEY_4>;
-		};
-	};
-
-	arduino_header: connector {
-		compatible = "arduino-header-r3";
-		#gpio-cells = <2>;
-		gpio-map-mask = <0xffffffff 0xffffffc0>;
-		gpio-map-pass-thru = <0 0x3f>;
-		gpio-map = <0 0 &gpio0 3 0>,	/* A0 */
-			   <1 0 &gpio0 4 0>,	/* A1 */
-			   <2 0 &gpio0 28 0>,	/* A2 */
-			   <3 0 &gpio0 29 0>,	/* A3 */
-			   <4 0 &gpio0 30 0>,	/* A4 */
-			   <5 0 &gpio0 31 0>,	/* A5 */
-			   <6 0 &gpio0 11 0>,	/* D0 */
-			   <7 0 &gpio0 12 0>,	/* D1 */
-			   <8 0 &gpio0 13 0>,	/* D2 */
-			   <9 0 &gpio0 14 0>,	/* D3 */
-			   <10 0 &gpio0 15 0>,	/* D4 */
-			   <11 0 &gpio0 16 0>,	/* D5 */
-			   <12 0 &gpio0 17 0>,	/* D6 */
-			   <13 0 &gpio0 18 0>,	/* D7 */
-			   <14 0 &gpio0 19 0>,	/* D8 */
-			   <15 0 &gpio0 20 0>,	/* D9 */
-			   <16 0 &gpio0 22 0>,	/* D10 */
-			   <17 0 &gpio0 23 0>,	/* D11 */
-			   <18 0 &gpio0 24 0>,	/* D12 */
-			   <19 0 &gpio0 25 0>,	/* D13 */
-			   <20 0 &gpio0 26 0>,	/* D14 */
-			   <21 0 &gpio0 27 0>;	/* D15 */
-	};
-
-	arduino_adc: analog-connector {
-		compatible = "arduino,uno-adc";
-		#io-channel-cells = <1>;
-		io-channel-map = <0 &adc 1>,	/* A0 = P0.3 = AIN1 */
-				 <1 &adc 2>,	/* A1 = P0.4 = AIN2 */
-				 <2 &adc 4>,	/* A2 = P0.28 = AIN4 */
-				 <3 &adc 5>,	/* A3 = P0.29 = AIN5 */
-				 <4 &adc 6>,	/* A4 = P0.30 = AIN6 */
-				 <5 &adc 7>;	/* A5 = P0.31 = AIN7 */
-	};
-
-	/* These aliases are provided for compatibility with samples */
-	aliases {
-		led0 = &led0;
-		led1 = &led1;
-		led2 = &led2;
-		led3 = &led3;
-		pwm-led0 = &pwm_led0;
-		sw0 = &button0;
-		sw1 = &button1;
-		sw2 = &button2;
-		sw3 = &button3;
-		bootloader-led0 = &led0;
-		mcuboot-button0 = &button0;
-		mcuboot-led0 = &led0;
-		watchdog0 = &wdt0;
-		trigger0 = &trigger_pin;
-		trigger1 = &trigger_pin2;
-		wakepin = &wake_pin;
-		modem = &sim7080;
-	};
-};
-
-&reg {
-	regulator-initial-mode = <NRF5X_REG_MODE_DCDC>;
-};
-
-&adc {
-	status = "okay";
-};
-
-&uicr {
-	gpio-as-nreset;
-};
-
-&nfct {
-	status = "okay";
-};
-
-&gpiote {
-	status = "okay";
-};
-
-&gpio0 {
-	status = "okay";
-};
-
-&rng {
-	status = "okay";
-};
-
-arduino_serial: &uart0 {
-	status = "okay";
-	compatible = "nordic,nrf-uarte";
-	current-speed = <115200>;
-	pinctrl-0 = <&uart0_default>;
-	pinctrl-1 = <&uart0_sleep>;
-	pinctrl-names = "default", "sleep";
 	
-	#address-cells = <1>;
-	#size-cells = <0>;
+	/ {
+		model = "Nordic nRF52 DK NRF52832";
+		compatible = "nordic,nrf52-dk-nrf52832";
 	
-	sim7080: modem@0 {
-			compatible = "simcom,sim7080";
-			reg = <0>;
-			mdm-power-gpios = <&gpio0 2 GPIO_ACTIVE_LOW>;
-			status = "okay";
+		chosen {
+			zephyr,console = &uart0;
+			zephyr,shell-uart = &uart0;
+			zephyr,uart-mcumgr = &uart0;
+			zephyr,bt-mon-uart = &uart0;
+			zephyr,bt-c2h-uart = &uart0;
+			zephyr,sram = &sram0;
+			zephyr,flash = &flash0;
+			zephyr,code-partition = &slot0_partition;
 		};
-};
-
-arduino_i2c: &i2c0 {
-	compatible = "nordic,nrf-twi";
-	status = "okay";
-	pinctrl-0 = <&i2c0_default>;
-	pinctrl-1 = <&i2c0_sleep>;
-	pinctrl-names = "default", "sleep";
-};
-
-&i2c1 {
-	compatible = "nordic,nrf-twi";
-	/* Cannot be used together with spi1. */
-	/* status = "okay"; */
-	pinctrl-0 = <&i2c1_default>;
-	pinctrl-1 = <&i2c1_sleep>;
-	pinctrl-names = "default", "sleep";
-};
-
-&pwm0 {
-	status = "okay";
-	pinctrl-0 = <&pwm0_default>;
-	pinctrl-1 = <&pwm0_sleep>;
-	pinctrl-names = "default", "sleep";
-};
-
-&spi0 {
-	compatible = "nordic,nrf-spi";
-	/* Cannot be used together with i2c0. */
-	/* status = "okay"; */
-	pinctrl-0 = <&spi0_default>;
-	pinctrl-1 = <&spi0_sleep>;
-	pinctrl-names = "default", "sleep";
-};
-
-&spi1 {
-	compatible = "nordic,nrf-spi";
-	status = "okay";
-	pinctrl-0 = <&spi1_default>;
-	pinctrl-1 = <&spi1_sleep>;
-	pinctrl-names = "default", "sleep";
-};
-
-arduino_spi: &spi2 {
-	compatible = "nordic,nrf-spi";
-	status = "okay";
-	cs-gpios = <&arduino_header 16 GPIO_ACTIVE_LOW>; /* D10 */
-	pinctrl-0 = <&spi2_default>;
-	pinctrl-1 = <&spi2_sleep>;
-	pinctrl-names = "default", "sleep";
-};
-
-&flash0 {
-	partitions {
-		compatible = "fixed-partitions";
+	
+		
+	
+		leds {
+			compatible = "gpio-leds";
+	
+			led0: led_0 {
+				gpios = <&gpio0 17 GPIO_ACTIVE_LOW>;
+				label = "Green LED 0";
+			};
+	
+			led1: led_1 {
+				gpios = <&gpio0 18 GPIO_ACTIVE_LOW>;
+				label = "Green LED 1";
+			};
+	
+			led2: led_2 {
+				gpios = <&gpio0 19 GPIO_ACTIVE_LOW>;
+				label = "Green LED 2";
+			};
+	
+			led3: led_3 {
+				gpios = <&gpio0 20 GPIO_ACTIVE_LOW>;
+				label = "Green LED 3";
+			};
+		};
+	
+		pwmleds {
+			compatible = "pwm-leds";
+	
+			pwm_led0: pwm_led_0 {
+				pwms = <&pwm0 0 PWM_MSEC(20) PWM_POLARITY_INVERTED>;
+			};
+		};
+	
+		buttons {
+			compatible = "gpio-keys";
+			wakeup-source;
+	
+			button0: button_0 {
+				gpios = <&gpio0 13 (GPIO_PULL_UP | GPIO_ACTIVE_LOW)>;
+				label = "Push button switch 0";
+				zephyr,code = <INPUT_KEY_0>;
+			};
+	
+			button1: button_1 {
+				gpios = <&gpio0 14 (GPIO_PULL_UP | GPIO_ACTIVE_LOW)>;
+				label = "Push button switch 1";
+				zephyr,code = <INPUT_KEY_1>;
+			};
+	
+			button2: button_2 {
+				gpios = <&gpio0 15 (GPIO_PULL_UP | GPIO_ACTIVE_LOW)>;
+				label = "Push button switch 2";
+				zephyr,code = <INPUT_KEY_2>;
+			};
+	
+			button3: button_3 {
+				gpios = <&gpio0 16 (GPIO_PULL_UP | GPIO_ACTIVE_LOW)>;
+				label = "Push button switch 3";
+				zephyr,code = <INPUT_KEY_3>;
+			};
+		};
+	
+		gpio_trigger {
+			compatible = "gpio-leds";
+			trigger_pin: trigger_0 {
+				gpios = <&gpio0 11 GPIO_ACTIVE_HIGH>;
+				label = "Wakeup Trigger Pin"; //sbc wakeup
+			};
+			trigger_pin2: trigger_1 {
+				gpios = <&gpio0 12 GPIO_ACTIVE_HIGH>;
+				label = "Wakeup Trigger Pin 2"; //modem wakeup
+			};
+	
+		};
+	
+		gpio_wake {
+			compatible = "gpio-keys";
+			wakeup-source;
+			wake_pin: wake_pin {
+				gpios = <&gpio0 28 (GPIO_PULL_UP | GPIO_ACTIVE_LOW)>;
+				label = "Wakeup Pin"; //sbc interrupting sbc for wake
+				zephyr,code = <INPUT_KEY_4>;
+			};
+		};
+	
+		arduino_header: connector {
+			compatible = "arduino-header-r3";
+			#gpio-cells = <2>;
+			gpio-map-mask = <0xffffffff 0xffffffc0>;
+			gpio-map-pass-thru = <0 0x3f>;
+			gpio-map = <0 0 &gpio0 3 0>,	/* A0 */
+				   <1 0 &gpio0 4 0>,	/* A1 */
+				   <2 0 &gpio0 28 0>,	/* A2 */
+				   <3 0 &gpio0 29 0>,	/* A3 */
+				   <4 0 &gpio0 30 0>,	/* A4 */
+				   <5 0 &gpio0 31 0>,	/* A5 */
+				   <6 0 &gpio0 11 0>,	/* D0 */
+				   <7 0 &gpio0 12 0>,	/* D1 */
+				   <8 0 &gpio0 13 0>,	/* D2 */
+				   <9 0 &gpio0 14 0>,	/* D3 */
+				   <10 0 &gpio0 15 0>,	/* D4 */
+				   <11 0 &gpio0 16 0>,	/* D5 */
+				   <12 0 &gpio0 17 0>,	/* D6 */
+				   <13 0 &gpio0 18 0>,	/* D7 */
+				   <14 0 &gpio0 19 0>,	/* D8 */
+				   <15 0 &gpio0 20 0>,	/* D9 */
+				   <16 0 &gpio0 22 0>,	/* D10 */
+				   <17 0 &gpio0 23 0>,	/* D11 */
+				   <18 0 &gpio0 24 0>,	/* D12 */
+				   <19 0 &gpio0 25 0>,	/* D13 */
+				   <20 0 &gpio0 26 0>,	/* D14 */
+				   <21 0 &gpio0 27 0>;	/* D15 */
+		};
+	
+		arduino_adc: analog-connector {
+			compatible = "arduino,uno-adc";
+			#io-channel-cells = <1>;
+			io-channel-map = <0 &adc 1>,	/* A0 = P0.3 = AIN1 */
+					 <1 &adc 2>,	/* A1 = P0.4 = AIN2 */
+					 <2 &adc 4>,	/* A2 = P0.28 = AIN4 */
+					 <3 &adc 5>,	/* A3 = P0.29 = AIN5 */
+					 <4 &adc 6>,	/* A4 = P0.30 = AIN6 */
+					 <5 &adc 7>;	/* A5 = P0.31 = AIN7 */
+		};
+	
+		/* These aliases are provided for compatibility with samples */
+		aliases {
+			led0 = &led0;
+			led1 = &led1;
+			led2 = &led2;
+			led3 = &led3;
+			pwm-led0 = &pwm_led0;
+			sw0 = &button0;
+			sw1 = &button1;
+			sw2 = &button2;
+			sw3 = &button3;
+			bootloader-led0 = &led0;
+			mcuboot-button0 = &button0;
+			mcuboot-led0 = &led0;
+			watchdog0 = &wdt0;
+			trigger0 = &trigger_pin;
+			trigger1 = &trigger_pin2;
+			wakepin = &wake_pin;
+			modem = &sim7080;
+		};
+	};
+	
+	&reg {
+		regulator-initial-mode = <NRF5X_REG_MODE_DCDC>;
+	};
+	
+	&adc {
+		status = "okay";
+	};
+	
+	&uicr {
+		gpio-as-nreset;
+	};
+	
+	&nfct {
+		status = "okay";
+	};
+	
+	&gpiote {
+		status = "okay";
+	};
+	
+	&gpio0 {
+		status = "okay";
+	};
+	
+	&rng {
+		status = "okay";
+	};
+	
+	arduino_serial: &uart0 {
+		status = "okay";
+		compatible = "nordic,nrf-uarte";
+		current-speed = <115200>;
+		pinctrl-0 = <&uart0_default>;
+		pinctrl-1 = <&uart0_sleep>;
+		pinctrl-names = "default", "sleep";
+		
 		#address-cells = <1>;
-		#size-cells = <1>;
-
-		boot_partition: partition@0 {
-			label = "mcuboot";
-			reg = <0x00000000 0xc000>;
-		};
-
-		slot0_partition: partition@c000 {
-			label = "image-0";
-			reg = <0x0000C000 0x37000>;
-		};
-
-		slot1_partition: partition@43000 {
-			label = "image-1";
-			reg = <0x00043000 0x37000>;
-		};
-
-		storage_partition: partition@7a000 {
-			label = "storage";
-			reg = <0x0007a000 0x00006000>;
+		#size-cells = <0>;
+		
+		sim7080: modem@0 {
+				compatible = "simcom,sim7080";
+				reg = <0>;
+				mdm-power-gpios = <&gpio0 2 GPIO_ACTIVE_LOW>;
+				status = "okay";
+			};
+	};
+	
+	arduino_i2c: &i2c0 {
+		compatible = "nordic,nrf-twi";
+		status = "okay";
+		pinctrl-0 = <&i2c0_default>;
+		pinctrl-1 = <&i2c0_sleep>;
+		pinctrl-names = "default", "sleep";
+	};
+	
+	&i2c1 {
+		compatible = "nordic,nrf-twi";
+		/* Cannot be used together with spi1. */
+		/* status = "okay"; */
+		pinctrl-0 = <&i2c1_default>;
+		pinctrl-1 = <&i2c1_sleep>;
+		pinctrl-names = "default", "sleep";
+	};
+	
+	&pwm0 {
+		status = "okay";
+		pinctrl-0 = <&pwm0_default>;
+		pinctrl-1 = <&pwm0_sleep>;
+		pinctrl-names = "default", "sleep";
+	};
+	
+	&spi0 {
+		compatible = "nordic,nrf-spi";
+		/* Cannot be used together with i2c0. */
+		/* status = "okay"; */
+		pinctrl-0 = <&spi0_default>;
+		pinctrl-1 = <&spi0_sleep>;
+		pinctrl-names = "default", "sleep";
+	};
+	
+	&spi1 {
+		compatible = "nordic,nrf-spi";
+		status = "okay";
+		pinctrl-0 = <&spi1_default>;
+		pinctrl-1 = <&spi1_sleep>;
+		pinctrl-names = "default", "sleep";
+	};
+	
+	arduino_spi: &spi2 {
+		compatible = "nordic,nrf-spi";
+		status = "okay";
+		cs-gpios = <&arduino_header 16 GPIO_ACTIVE_LOW>; /* D10 */
+		pinctrl-0 = <&spi2_default>;
+		pinctrl-1 = <&spi2_sleep>;
+		pinctrl-names = "default", "sleep";
+	};
+	
+	&flash0 {
+		partitions {
+			compatible = "fixed-partitions";
+			#address-cells = <1>;
+			#size-cells = <1>;
+	
+			boot_partition: partition@0 {
+				label = "mcuboot";
+				reg = <0x00000000 0xc000>;
+			};
+	
+			slot0_partition: partition@c000 {
+				label = "image-0";
+				reg = <0x0000C000 0x37000>;
+			};
+	
+			slot1_partition: partition@43000 {
+				label = "image-1";
+				reg = <0x00043000 0x37000>;
+			};
+	
+			storage_partition: partition@7a000 {
+				label = "storage";
+				reg = <0x0007a000 0x00006000>;
+			};
 		};
 	};
-};
-
-
-// can change it to whatever arduino available pin, 11 just seemed to work (p0.21 did NOT work lol)
-
-/ {
-    w1: onewire {
-        compatible = "zephyr,w1-gpio";
-        gpios = <&gpio0 11 (GPIO_ACTIVE_HIGH | GPIO_OPEN_DRAIN | GPIO_PULL_UP)>;
-        status = "okay";
-
-        ds18b20: temp0 {
-            compatible = "maxim,ds18b20";
-            resolution = <12>;   
-            status = "okay";
-        };
-    };
-};
+	
+	
+	// can change it to whatever arduino available pin, 11 just seemed to work (p0.21 did NOT work lol)
+	
+	/ {
+	    w1: onewire {
+	        compatible = "zephyr,w1-gpio";
+	        gpios = <&gpio0 11 (GPIO_ACTIVE_HIGH | GPIO_OPEN_DRAIN | GPIO_PULL_UP)>;
+	        status = "okay";
+	
+	        ds18b20: temp0 {
+	            compatible = "maxim,ds18b20";
+	            resolution = <12>;   
+	            status = "okay";
+	        };
+	    };
+	};
 
 
