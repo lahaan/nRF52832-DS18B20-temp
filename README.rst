@@ -19,7 +19,7 @@ Setup desc. in main.c
    Temperature: 31.88 °C
    Temperature: 31.81 °C
 
-.. dts:
+.. code-block:: dts
 
 
 
